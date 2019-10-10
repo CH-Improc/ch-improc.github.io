@@ -1,7 +1,10 @@
 ---
 title: Attention-guided Low-light Image Enhancement
 description: 
-categories: Low-light image enhancement, Deep Learning, Attention
+categories: 
+- Low-light image enhancement
+- Deep Learning
+- Attention
 tags:
 - 
 ---
