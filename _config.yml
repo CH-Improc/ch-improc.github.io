@@ -3,6 +3,8 @@
 ## Docs: https://jekyllrb.com/docs/configuration/
 # ---------------------------------------------------------------
 
+remote_theme : Simpleyyt/jekyll-theme-next
+
 # Site
 title: NexT
 subtitle:
@@ -736,5 +738,3 @@ images: assets/images
 
 # Theme version
 version: 5.1.1
-
-remote_theme : Simpleyyt/jekyll-theme-next
