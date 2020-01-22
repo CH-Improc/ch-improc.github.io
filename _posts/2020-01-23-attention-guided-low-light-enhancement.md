@@ -28,8 +28,6 @@ tags:
 
 ## 2. Related work
 
-저조도 영상 개선 분야는 꾸준히 연구되어오고 있는데 어떤 방법들이 있는지 알아보겠습니다.
-
 ### Traditional enhancement methods
 
 기존 저조도 영상 개선 방법은 Histogram equalization(HE) 기반 방법과 Retinex 이론을 이용한 방법 두 가지로 나눌 수 있습니다. HE 기반 방법은 밝기 값의 통계적 특성을 이용하여 영상의 dynamic range를 확장하거나 영상의 대비(contrast)를 개선하는 방법입니다. 이 방법은 조명(illumination)을 고려하지 않고 영상 전체의 대비를 개선하면서 과도하게 혹은 저조하게 개선하는 현상을 일으킵니다.  
@@ -73,7 +71,8 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 
   $\alpha$와 $\beta$는 선형 변환을 의미하고, $\gamma$는 감마 변환을 의미합니다.
   
-  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig05.png' | prepend: site.baseurl}}" alt="fig05"></figure>
+  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig05.png' | prepend: site.baseurl}}" width=67% height=67% alt="fig05"></figure>
+  
   위 그림은 저조도 합성 결과를 검증하는 그림입니다. 그래프는 $YCbCr$의 $Y$채널 히스토그램이며, 저조도를 합성한 영상과 저노출의 영상을 비교했을 때 유사한 것을 알 수 있습니다. 
 - 노이즈는 카메라 내에서 처리하는 영상처리(Image processing) 파이프라인을 고려하여 real-world 저조도 잡음인 Gaussian-Poisson mixed 노이즈 모델을 이용하여 합성합니다.
   
@@ -82,7 +81,7 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   $\mathcal{P}(\cdot)$는 variance $\sigma_{p}^{2}$에 따른 poisson 노이즈를 부여하는 함수, $N_{G}$는 variance $\sigma _{g}^{2}$에 따른 additive white gaussian noise, $f(x)$는 camera response 함수, $M(x)$와 $M^{-1}(x)$는 각각 RGB to Bayer 함수와 그 역변환 함수인 demosaicing 함수입니다. 영상 압축은 고려하지 않았습니다.
   
 - **Image contrast amplification**  
-  기존 학습 기반 저조도 개선 방법들의 학습 dataset들은 {저조도 영상, 적정 조도 영상}으로 구성되는데, 이러한 방법의 결과 영상에서 종종 contrast가 낮은 현상이 나타납니다. 이러한 현상을 해결하기 위해 적정 조도 영상에 contrast amplication 방법을 적용하여 새로운 고품질의 영상을 획득하고 {적정 조도 영상, 고품질 영상} 쌍을 구성하여 추후 언급할 Reinforce-Net에 사용합니다. 고품질의 영상을 얻는 과정(contrast amplication 방법)은 다음과 같습니다. 적정 조도 영상에 gamma transformation의 선형 결합 방정식으로 10개의 다른 노출 영상을 생성하고 하나의 영상으로 합성한 후, 합성된 영상에 L0-smoothing(edge preserving filter 종류 중 하나)을 이용하여 디테일을 개선하여 고품질의 영상을 얻습니다.
+  기존 학습 기반 저조도 개선 방법들의 학습 dataset들은 {저조도 영상, 적정 조도 영상} 쌍으로 구성되는데, 이러한 dataset을 이용하여 저조도를 개선한 방법들의 결과를 보면 contrast가 낮은 현상이 나타나기도 합니다(Fig. 9 영상에서 MBLLEN 방법의 결과). 이러한 현상을 해결하기 위해 적정 조도 영상에 contrast amplication 방법을 적용하여 새로운 고품질의 영상을 획득하고 {적정 조도 영상, 고품질 영상} 쌍을 구성하여 추후 언급할 Reinforce-Net에 사용합니다. 고품질의 영상을 얻는 과정(contrast amplication 방법)은 다음과 같습니다. 적정 조도 영상에 gamma transformation의 선형 결합 방정식으로 10개의 다른 노출 영상을 생성하고 하나의 영상으로 합성한 후, 합성된 영상에 L0-smoothing(edge preserving filter 종류 중 하나)을 이용하여 디테일을 개선하고 고품질의 영상을 얻습니다.
 
 ## 4. Methodology
 
@@ -98,7 +97,8 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   
   $max_{c}(x)$는 color채널 중에 최댓값을 반환하는 함수, $R$은 ground truth인 적정 조도 영상, $\mathcal{F}(R)$는 합성한 저조도 영상, $A$는 ue-attention map입니다.
   
-  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig06.png' | prepend: site.baseurl}}" alt="fig06"></figure>
+  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig06.png' | prepend: site.baseurl}}" width=67% height=67% alt="fig06"></figure>
+  
   위 사진은 입력 영상에 따른 ue-attention map과 반전된 ue-attention map, 기존 Retinex 이론의 illumination map을 보입니다. 반전된 ue-attention map은 기존 Retinex 이론에서 사용하는 illumination map과 유사한데, 이 내용은 ue-attention map에는 조도 혹은 노출에 관련된 정보가 있다는 것을 의미하고 Attention-Net을 사용하는 이유를 뒷받침해줍니다. 한편, 반전된 ue-attention map을 기존의 Retinex 이론 기반 알고리즘들에 바로 적용하면 만족할만한 결과를 얻을 수 없는데, 그 이유는 기존 Retinex 이론 기반 알고리즘들이 black 영역(pixel 값이 0인 부분)과 노이즈 영역을 다루기 어렵기 때문이라고 주장하고 있습니다.
   
 - **Noise-Net**  
