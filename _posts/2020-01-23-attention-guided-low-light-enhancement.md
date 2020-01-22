@@ -60,17 +60,12 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 학습 dataset에 사용되는 영상은 기본적으로 고품질의 적정 조도에서 촬영된 영상이며, 이러한 고품질 영상에 저조도환경을 합성하여 {저조도 영상, 적정 조도 영상} 쌍을 구성합니다. 이 논문에서는 PASCAL VOC, MS COCO 등의 널리 사용되는 dataset에서 고화질의 적정 조도 영상을 선별하기 위해 아래 3가지 방법을 이용합니다.
 
 - **Darkness estimation**
-  
-
-적정 조도의 영상을 선별하기 위해 다음과 같은 방법을 적용합니다. 먼저 영상에 super-pixel segmentation을 적용하고, 각 super-pixel의 mean/variance가 일정 threshold보다 높다면 해당 super-pixel의 밝기는 밝다고 판단합니다. 그리고 밝다고 판단된 super-pixel의 수가 85% 이상이면 해당 영상은 적정 조도 영상으로 판단합니다.
+  적정 조도의 영상을 선별하기 위해 다음과 같은 방법을 적용합니다. 먼저 영상에 super-pixel segmentation을 적용하고, 각 super-pixel의 mean/variance가 일정 threshold보다 높다면 해당 super-pixel의 밝기는 밝다고 판단합니다. 그리고 밝다고 판단된 super-pixel의 수가 85% 이상이면 해당 영상은 적정 조도 영상으로 판단합니다.
 
 - **Blur estimation**
-  
-
-뿌옇지 않고 디테일이 잘 표현된 영상을 선별하는 과정입니다. 영상에 laplacian filter를 적용하고, 그 결과의 variance 구했을 때, 그 값이 500 이상이라면 detail이 잘 표현된 영상으로 판단합니다.
+  뿌옇지 않고 디테일이 잘 표현된 영상을 선별하는 과정입니다. 영상에 laplacian filter를 적용하고, 그 결과의 variance 구했을 때, 그 값이 500 이상이라면 detail이 잘 표현된 영상으로 판단합니다.
 
 - **Colorfulness estimation**
-  
   색표현이 잘 된 영상을 선별하는 과정입니다. no-reference 기반의 색 표현 정도 측정 방법의 하나를 이용하며, 그 값이 500 이상이면 색 표현이 잘 된 영상으로 판단합니다.
 
 ### Target image synthesis
@@ -78,30 +73,16 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 위의 방법으로 선택한 영상들에 대해 real-world 저조도 상황과 유사하도록 저조도를 합성합니다. 대부분의 기존 방법들은 노이즈를 고려하지 않았는데, real-world 저조도 영상은 밝기가 어두울 뿐만 아니라 노이즈까지 포함되어 있습니다. 저조도를 먼저 합성한 후, 노이즈를 합성합니다.
 
 - **Low-light image synthesis**
-  
   다중 노출 영상에서의 저노출 영상과, 저조도 영상의 차이를 분석해본 결과, 이 둘은 서로 감마 변환(gamma transformation)의 선형 결합으로 근사 표현된다고 합니다. 감마 변환의 선형 결합 방법은 아래 수식과 같습니다. 이 방법으로 저조도를 합성합니다.
-  
-
-$$ I_{out}^{(i)} = \beta \times (\alpha \times I_{in}^{(i)})^{\gamma}, i \in \left \{ R,G,B \right \} $$
-
+  $$ I_{out}^{(i)} = \beta \times (\alpha \times I_{in}^{(i)})^{\gamma}, i \in \left \{ R,G,B \right \} $$
   $\alpha$와 $\beta$는 선형 변환을 의미하고, $\gamma$는 감마 변환을 의미합니다.
-
-  
-
 
   <center><img src="./assets/AgLLNet_figures/fig05.png" width=67% height=67%></center>
   위 그림은 저조도 합성 결과를 검증하는 그림입니다. 그래프는 $YCbCr$의 $Y$채널 히스토그램이며, 저조도를 합성한 영상과 저노출의 영상을 비교했을 때 유사한 것을 알 수 있습니다. 
 
-  
-
 - 노이즈는 카메라 내에서 처리하는 영상처리(Image processing) 파이프라인을 고려하여 real-world 저조도 잡음인 Gaussian-Poisson mixed 노이즈 모델을 이용하여 합성합니다.
-  
-
-$$ I_{out}=M^{-1}(M(f(\mathcal{P}(I_{in})+N_{G})))_$$
-
-$\mathcal{P}$는 variance $\sigma_{p}^{2}$에 따른 poisson노이즈를 부여하는 함수, $N_{G}$는 variance $\sigma _{g}^{2}$에 따른 additive white gaussian noise, $f(x)$는 camera response 함수, $M(x)$와 $M^{-1}(x)$는 각각 RGB to Bayer 함수와 그 역변환 함수인 demosaicing 함수입니다. 영상 압축은 고려하지 않았습니다.
-
-  
+  $$ I_{out}=M^{-1}(M(f(\mathcal{P}(I_{in})+N_{G})))_$$
+  $\mathcal{P}$는 variance $\sigma_{p}^{2}$에 따른 poisson노이즈를 부여하는 함수, $N_{G}$는 variance $\sigma _{g}^{2}$에 따른 additive white gaussian noise, $f(x)$는 camera response 함수, $M(x)$와 $M^{-1}(x)$는 각각 RGB to Bayer 함수와 그 역변환 함수인 demosaicing 함수입니다. 영상 압축은 고려하지 않았습니다.
 
 - **Image contrast amplification**
   
