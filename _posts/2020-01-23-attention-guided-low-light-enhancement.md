@@ -170,7 +170,7 @@ $$ \mathcal{L} = \omega_{a}\mathcal{L}_{a} + \omega_{n}\mathcal{L}_{n} + \omega_
   
     $$ \mathcal{L}_{ep}=\frac{1}{w_{ij}h_{ij}c_{ij}}\sum_{x=1}^{w_{ij}}\sum_{y=1}^{h_{ij}}\sum_{z=1}^{c_{ij}}\left \| \phi_{ij} ({I}')_{xyz} - \phi_{ij} (\tilde{I})_{xyz} \right \| $$
   
-    수식에서 $${I}'=\mathcal{F}_{e}(I,{A}',{N}')$$는 Enhancement-Net으로 부터 추론된 저조도가 개선된 영상, $$\tilde{I}$$는 적정 조도 영상을 의미합니다. $$w_{ij}$$, $$h_{ij}$$, $$c_{ij}$$는 각각 VGG-19 네트워크 feature map의 각각 넓이, 높이, 개수를 의미하고, $$\phi_{ij}$$는 $i$-th block 안에 있는 $j$-th convolution layer의 feature map을 의미합니다.
+    수식에서 $${I}'=\mathcal{F}_{e}(I,{A}',{N}')$$는 Enhancement-Net으로 부터 추론된 저조도가 개선된 영상, $$\tilde{I}$$는 적정 조도 영상을 의미합니다. $$w_{ij}$$, $$h_{ij}$$, $$c_{ij}$$는 각각 VGG-19 네트워크 feature map의 각각 넓이, 높이, 개수를 의미하고, $$\phi_{ij}$$는 $$i$$-th block 안에 있는 $$j$$-th convolution layer의 feature map을 의미합니다.
   
   - **regional loss**는 저조도 영역에 좀 더 주의(attention)하도록 설계되었습니다. 저조도 영역과 저조도 영역이 아닌 부분이 개선되면서 그 개선되는 정도의 균형을 맞추기 위해 아래와 같은 loss 함수를 제안합니다.
   
@@ -183,7 +183,7 @@ $$ \mathcal{L} = \omega_{a}\mathcal{L}_{a} + \omega_{n}\mathcal{L}_{n} + \omega_
   
   $$ \mathcal{L}_{r}=\omega_{rb}\mathcal{L}_{rb} + \omega_{rs}\mathcal{L}_{rs} + \omega_{rp}\mathcal{L}_{rp} $$
   
-  수식에서 $\mathcal{L}_{rb}$, $\mathcal{L}_{rs}$, $\mathcal{L}_{rp}$는 각각 bright loss, structural loss, perceptual loss를 의미하고 $\omega_{rb}$, $\omega_{rs}$, $\omega_{rp}$, 는 각각 해당하는 loss의 가중치들이며, Enhancement-Net의 해당하는 loss들과 동일합니다.
+  수식에서 $$\mathcal{L}_{rb}$$, $$\mathcal{L}_{rs}$$, $$\mathcal{L}_{rp}$$는 각각 bright loss, structural loss, perceptual loss를 의미하고 $$\omega_{rb}$$, $$\omega_{rs}$$, $$\omega_{rp}$$, 는 각각 해당하는 loss의 가중치들이며, Enhancement-Net의 해당하는 loss들과 동일합니다.
 
 
 ## 5. Experimental evaluation
