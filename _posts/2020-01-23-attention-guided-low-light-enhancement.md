@@ -9,47 +9,44 @@ tags:
 - Multi-branch network
 ---
 
-# Attention-guided Low-light Image Enhancement
+# 1. Introduction
 
-## 1. Introduction
-
-어두운 곳에서 객체를 관찰 할 때, 사람 눈으로 관찰하면 잘 보이는데 카메라로 촬영하면 잘 보이지 않는 경우가 있습니다. 이렇게 조도가 낮은 환경에서 촬영한 영상을 저조도 영상이라고 부르는데, 저조도 영상은 대게 가시성이 떨어지며 대비가 낮고 노이즈가 나타나는 문제가 있습니다. 이러한 저조도 영상에 저조도 개선 기술을 적용하여 가시성과 대비를 개선할 수 있습니다. 저조도 영상 개선 기술은 다양한 분야에 많이 사용됩니다. 소비자들이 저조도 환경에서 아름다운 사진을 촬영할 수 있도록 할 수 있고, 자율 주행 자동차나 비디오 감시 등의 시스템들이 어두운 환경에서 고품질의 영상을 획득할 수 있도록 할 수 있습니다. 
+어두운 곳에서 객체를 관찰 할 때, 사람 눈으로 관찰하면 잘 보이는데 카메라로 촬영하면 잘 보이지 않는 경우가 있습니다. 조도가 낮은 환경에서 촬영한 영상을 저조도 영상이라고 부르는데, 저조도 영상은 대게 가시성이 떨어지며 대비가 낮고 노이즈가 나타나는 문제가 있습니다. 이러한 저조도 영상에 저조도 개선 기술을 적용하여 가시성과 대비를 개선할 수 있습니다. 저조도 영상 개선 기술은 다양한 분야에 많이 사용됩니다. 소비자들이 저조도 환경에서 아름다운 사진을 촬영할 수 있도록 할 수 있고, 자율 주행 자동차나 비디오 감시 등의 시스템들이 어두운 환경에서 고품질의 영상을 획득할 수 있도록 할 수 있습니다. 
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig01.png' | prepend: site.baseurl}}" alt="fig01"></figure>
 저조도 영상 개선 기술은 꾸준히 연구되어 오고 있는데 여전히 개선의 여지가 많습니다. 위 그림은 입력 영상에 따른 기존 방법들과 제안하는 방법의 결과를 보입니다. 기존 방법들은 Histogram equalization이나 Retinex 이론에 따라 저조도를 개선하는데, 대부분 노이즈의 영향을 무시하고 밝기와 대비를 개선하는 데 중점을 둡니다. 노이즈를 고려하는 방법의 경우, 노이즈를 제거하는 파이프라인을 별도로 구성하기도 합니다. 하지만 이 방법은 저조도를 개선하기 전에 노이즈를 제거하면 블러가 되고, 저조도를 개선한 후 노이즈를 제거하면 노이즈가 증폭되는 문제가 있습니다. 이 문제를 해결하기 위해 본 논문에서는 저조도와 노이즈 제거를 동시에 하는 솔루션을 제안합니다. 또, 이 논문에서는 기존의 학습 기반의 저조도 영상 개선 방법에서 사용되는 dataset들은 양이 부족하여 학습하는 데 어려움이 있다고 주장하고 있습니다. 이러한 문제를 해결하기 위해 양질의 저조도 영상 dataset을 구성하는 방법을 제안합니다.
 
-이 논문의 Contribution은 다음과 같습니다.
-
+이 논문의 Contribution은 다음과 같습니다.  
 - Multi-branch network 구조의 attention guided double enhancement 방법 제안
 - 저조도와 노이즈와 관련된 attention map을 생성하고, 저조도와 노이즈를 동시에 효과적으로 개선
 - 대량의 저조도 영상 dataset을 구성하는 방법 제안
 - 다양한 실험을 통해 제안하는 방법이 기존의 방법들보다 우수하며, 다른 task에도 적용이 가능한 유연성을 보임
 
 
-## 2. Related work
+# 2. Related work
 
-### Traditional enhancement methods
+## Traditional enhancement methods
 
 기존 저조도 영상 개선 방법은 Histogram equalization(HE) 기반 방법과 Retinex 이론을 이용한 방법 두 가지로 나눌 수 있습니다. HE 기반 방법은 밝기 값의 통계적 특성을 이용하여 영상의 dynamic range를 확장하거나 영상의 대비(contrast)를 개선하는 방법입니다. 이 방법은 조명(illumination)을 고려하지 않고 영상 전체의 대비를 개선하면서 과도하게 혹은 저조하게 개선하는 현상을 일으킵니다.  
 두 번째로는 Retinex 이론을 이용한 방법입니다. 영상은 반사(reflectance) 성분과 조명(illumination) 성분으로 이루어져 있다는 가정에 따라 정의된 이론이 Retinex 이론입니다. 영상을 반사 성분과 조명 성분으로 나누었을 때, 외부 요인인 조명 성분을 잘 조정하면 저조도 영상을 개선할 수 있습니다. 이렇게 하기 위해서는 영상의 조명 성분을 잘 추정 해야 하는데, 수학적으로 ill-posed 문제이기 때문에 여러 가지 가정에 따라 조명 성분을 추정하는 게 일반적입니다. 이 과정에서 hand-crafted 방법들이 적용되며, 파라미터 튜닝에 의존적이게 됩니다. 또, Retinex 이론 기반 방법들은 대부분 노이즈를 고려하지 않기 때문에 저조도를 개선 시키면서 노이즈 또한 증폭시키는 문제점이 있습니다.
 
-### Learning-based enhancement methods
+## Learning-based enhancement methods
 
 저조도 영상 개선과 같은 low-level 영상 처리에도 end-to-end network, GAN과 같은 딥러닝 기술이 적용되면서 해당 분야에도 좋은 성과를 보이고 있습니다. Multi-layer perceptron auto-encoder를 이용한 LLNet, Retinex 이론과 convolution neural network(CNN)를 이용한 RetinexNet 등 CNN 기반의 저조도 영상 개선 방법들이 계속 연구되어오고 있습니다.  
 또, end-to-end 형태로 구성된 네트워크와 perceptual loss를 이용하여 모바일 카메라에서 촬영한 영상을 DSLR 카메라에서 촬영한 품질로 변환하는 DPED 방법, 센서로부터 획득한 raw 영상을 CNN에 바로 입력시켜 영상을 개선하는 방법 등이 있습니다. 이러한 학습 기반 방법들은 학습하는 과정에 노이즈를 제거하는 과정을 포함하지 않거나, 기존 노이즈 제거 방법을 따로 적용하기도 합니다.
 
 
-### Image denoising methods
+## Image denoising methods
 
 노이즈를 제거하는 방법 역시 마찬가지로 딥러닝 기술이 적용되면서 좋은 성과를 보이고 있습니다. Gaussian 노이즈를 고려한 BM3D, DnCNN 방법, Poisson 노이즈를 고려한 NLPCA 방법, Gaussian-Poisson 노이즈를 함께 고려한 CBDNet 방법 등이 있는데, 이러한 방법들을 저조도 개선 기술에 바로 적용하게 되면 블러한 결과를 얻게 되는 문제점이 있습니다. 이러한 현상을 피하고자 본 논문에서는 저조도와 노이즈를 동시에 개선하는 방법을 제안합니다.
 
-## 3. Dataset
+# 3. Dataset
 
 Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset을 구성하는 것은 어려운 일입니다. 기존에는 적정 조도 영상의 밝기 값을 조절하여 저조도 환경을 인위적으로 합성하거나, 카메라의 노출 정도와 ISO 값을 조절하여 dataset을 구성하는 등의 시도가 있었습니다.  
 특히 노출 정도와 ISO 값을 조정하는 방법을 이용하여 구성한 dataset은 다양한 저조도 환경에 대응하지 못하는(해당 dataset에서의 테스트에는 좋은 결과를 보였지만 다른 저조도 영상에 적용했을 때 과도하게 개선하여 saturation 되는 등의) 현상이 나타나는 문제점이 있었습니다.  
 이와 유사하게 극-저조도 환경에서 촬영한 raw 영상과 적정 조도에서 촬영한 영상 쌍으로 dataset을 구성하는 사례도 있었는데, 저조도 영상이 raw 데이터이기 때문에 일반적인 저조도 영상 개선에는 사용하기 어려운 단점이 있습니다. 또 이러한 dataset들은 데이터 양이 비교적 적은 문제점도 있었습니다.  이 논문에서는 PASCAL VOC, MS COCO 등의 널리 사용되는 dataset으로부터 저조도 환경을 합성하는 방법 이용하여 대량의 {저조도 영상, 적정 조도 영상} 쌍의 dataset을 구성하는 방법을 제안합니다. 
 
-### Candidate Image Selection
+## Candidate Image Selection
 
 학습 dataset에 사용되는 영상은 기본적으로 고품질의 적정 조도에서 촬영된 영상이며, 이러한 고품질 영상에 저조도환경을 합성하여 {저조도 영상, 적정 조도 영상} 쌍을 구성합니다. 이 논문에서는 PASCAL VOC, MS COCO 등의 널리 사용되는 dataset에서 고화질의 적정 조도 영상을 선별하기 위해 아래 3가지 방법을 이용합니다.
 
@@ -60,7 +57,7 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 - **Colorfulness estimation**  
   색표현이 잘 된 영상을 선별하는 과정입니다. no-reference 기반의 색 표현 정도 측정 방법의 하나를 이용하며, 그 값이 500 이상이면 색 표현이 잘 된 영상으로 판단합니다.
 
-### Target image synthesis
+## Target image synthesis
 
 위의 방법으로 선택한 영상들에 대해 real-world 저조도 상황과 유사하도록 저조도를 합성합니다. 대부분의 기존 방법들은 노이즈를 고려하지 않았는데, real-world 저조도 영상은 밝기가 어두울 뿐만 아니라 노이즈까지 포함되어 있습니다. 저조도를 먼저 합성한 후, 노이즈를 합성합니다.
 
@@ -82,9 +79,9 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 - **Image contrast amplification**  
   기존 학습 기반 저조도 개선 방법들의 학습 dataset들은 {저조도 영상, 적정 조도 영상} 쌍으로 구성되는데, 이러한 dataset을 이용하여 저조도를 개선한 방법들의 결과를 보면 contrast가 낮은 현상이 나타나기도 합니다(Fig. 9 영상에서 MBLLEN 방법의 결과). 이러한 현상을 해결하기 위해 적정 조도 영상에 contrast amplication 방법을 적용하여 새로운 고품질의 영상을 획득하고 {적정 조도 영상, 고품질 영상} 쌍을 구성하여 추후 언급할 Reinforce-Net에 사용합니다. 고품질의 영상을 얻는 과정(contrast amplication 방법)은 다음과 같습니다. 적정 조도 영상에 gamma transformation의 선형 결합 방정식으로 10개의 다른 노출 영상을 생성하고 하나의 영상으로 합성한 후, 합성된 영상에 L0-smoothing(edge preserving filter 종류 중 하나)을 이용하여 디테일을 개선하고 고품질의 영상을 얻습니다.
 
-## 4. Methodology
+# 4. Methodology
 
-### Network architecture
+## Network architecture
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig04.png' | prepend: site.baseurl}}" alt="fig04"></figure>
 이 논문에서 제안하는 네트워크는 4개의 서브넷 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net으로 구성되어 있습니다. 먼저 입력 영상 Input 영상을 Attention-Net에 입력 시킵니다. Attention-Net은 저조도 영역을 추정하는 네트워크입니다. 저조도 영역 Noise-Net은 노이즈 영역을 추정하는 네트워크입니다. 이 두 가지 네트워크로부터 얻은 결과를 보조(guide)로 Enhancement-Net에 이용합니다. 그리고 Reinforce-Net을 통하여 영상을 한 번 더 개선합니다.
@@ -121,7 +118,7 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 - **Reinforce-Net**  
 Reinforce-Net은 저조도를 개선한 후에도 contrast가 낮게 나타는 현상과 detail을 강조하기 위해 구성한 네트워크입니다. 기존 방법 중에 dilated convolution 구조를 이용하여 효과적으로 영상처리 알고리즘을 구현한 방법이 있는데, 그 방법과 유사하게 네트워크를 구성했습니다. 
 
-### Loss function
+## Loss function
 
 본 논문에서는 영상의 structural information, perceptual information, regional difference를 고려하여 새로운 loss 함수를 제안합니다.
 
@@ -184,11 +181,11 @@ $$ \mathcal{L} = \omega_{a}\mathcal{L}_{a} + \omega_{n}\mathcal{L}_{n} + \omega_
   수식에서 $$\mathcal{L}_{rb}$$, $$\mathcal{L}_{rs}$$, $$\mathcal{L}_{rp}$$는 각각 bright loss, structural loss, perceptual loss를 의미하고 $$\omega_{rb}$$, $$\omega_{rs}$$, $$\omega_{rp}$$, 는 각각 해당하는 loss의 가중치들이며, Enhancement-Net의 해당하는 loss들과 동일합니다.
 
 
-## 5. Experimental evaluation
+# 5. Experimental evaluation
 
 synthetic dataset, real dataset, real images들에 대해 실험을 진행했으며, 실험 결과는 아래와 같습니다.
 
-### Experiments on synthetic datasets
+## Experiments on synthetic datasets
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig07.png' | prepend: site.baseurl}}" alt="fig07"></figure>
 위 사진은 저조도와 노이즈를 합성한 영상에 대해 실험 결과 영상들입니다. 노이즈를 고려하지 않은 저조도 개선 방법에는 결과에 최신 노이즈 제거 방법중 하나인 CDBNet을 적용했다고 합니다. 그럼에도 불구하고 제안하는 방법이 노이즈가 적게 보이며, ground truth에 가까운 것을 알 수 있습니다.
@@ -198,7 +195,7 @@ synthetic dataset, real dataset, real images들에 대해 실험을 진행했으
 표1, 2는 다양한 성능 평가 방법을 이용하여 객관적 평가한 결과를 보입니다. 표 1은 노이즈를 추가하지 않은 synthetic dataset, 표 2는 노이즈를 추가한 synthetic dataset에 대한 실험입니다. 제안하는 방법의 성능 수치가 가장 높게 나온 것을 알 수 있습니다.
 
 
-### Experiments on real datasets
+## Experiments on real datasets
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig09.png' | prepend: site.baseurl}}" alt="fig09"></figure>
 위 사진은 real-world dataset 인 LOL dataset과 SID dataset에 대한 실험 결과 영상들 입니다. LOL dataset은 한 장면에서 ISO 값을 바꿔 획득한 {저조도 영상, 적정 조도 영상} 쌍으로 구성되어 있고, SID dataset은 한 장면에서 노출 정도를 조절하여 촬영한 {짧은-노출, 긴-노출} 영상 쌍으로 구성되어 있습니다. 단, SID는 raw 데이터 형태로 되어 있습니다. 역시 제안하는 방법이 기존 방법들보다 artifact도 적으며 디테일 밝기 모든 면에서 좋아 보입니다.
@@ -210,10 +207,12 @@ LOL dataset 의 경우 제안하는 네트워크 구조에서 Enhancement-Net의
 
 SID dataset의 경우는 raw 데이터로 되어 있어서 실험하기가 까다로운 문제가 있습니다. 기존 방법들은 대부분 raw가 아닌 RGB 영상 형태로 데이터가 입력되어야 하므로 해당 dataset으로 실험할 수 없었습니다. 다만 제안하는 방법과 비교할 때, Chen이 제안한 방법(raw 데이터를 입력하는 방법)에서 네트워크 일부를 Enhancement-Net으로 바꾸어 학습한 후, 객관적 수치를 비교했습니다. 그 결과 제안하는 방법이 PSNR, SSIM의 수치는 조금 낮게 나왔지만 파라미터 수는 낮아 훨씬 가벼운 것을 확인할 수 있습니다.
 
-### Experiments on real Images
+## Experiments on real Images
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig11.png' | prepend: site.baseurl}}" alt="fig11"></figure>
 위 사진과 같이 실제 저조도 환경에서 촬영한 영상에 대한 결과를 보면, 제안하는 방법이 가장 선명하고 자연스러운 것을 확인할 수 있습니다.
+
+
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig10.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig10"></figure>
 실제 저조도 환경에서 촬영한 영상에 대해 user study를 수행한 결과 제안하는 방법의 점수가 역시 가장 높게 나왔습니다.
@@ -223,29 +222,31 @@ SID dataset의 경우는 raw 데이터로 되어 있어서 실험하기가 까�
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig12.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig12"></figure>
 위 그림은 흑백 감시 카메라에서 촬영한 영상과 게임 장면에 제안하는 방법을 적용한 결과입니다. 제안하는 방법은 다양한 저조도 환경에도 적용할 수 있다고 주장합니다.
 
+
+
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig13.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig13"></figure>
 저조도 영상과 저조도를 개선한 영상에 Mask R-CNN 객체 검출 알고리즘을 적용했을 때 결과입니다. 제안하는 방법으로 저조도를 개선 후 객체 검출을 수행했을 때, 객체를 더 잘 검출하는 것을 확인할 수 있습니다.
 
-### Ablation study
+## Ablation study
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/table04.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="table04"></figure>
 표 4는 본 논문에서 구성한 synthetic dataset 에 대해 ablation study를 수행한 결과입니다. 수행하는 과정에서 Reinforce-Net은 제외했습니다. 2번은 일반적으로 사용하는 MSE loss를 사용했을 때의 결과입니다. 논문에서 제안한 loss를 들을 사용할 때 더 성능이 높은 것을 확인할 수 있습니다. default 구성의 branch 수는 10으로 세팅했을 때의 결과입니다. branch의 수가 높을 때 항상 성능이 좋은 것은 아니라고 언급하고 있습니다.
 
-### Unsatisfying cases
+## Unsatisfying cases
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig14.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig14"></figure>
 위 그림은 제안하는 방법뿐만 아니라 다른 최신의 방법들도 만족할만한 결과를 얻지 못한 경우를 보입니다. 너무 어두워서 texture 정보가 아예 없는 경우, 과도한 압축으로 나타나는 block artifact, 과도한 노이즈 등으로 인해 만족지 못한 결과를 얻는다고 하고 있으며, 추후 이런 문제를 해결할 것이라고 합니다.
 
-### Flexible and effective for other low-level image processing tasks
+## Flexible and effective for other low-level image processing tasks
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig15.png' | prepend: site.baseurl}}" alt="fig15"></figure>
 제안하는 방법은 dehazing, super resolution, motion blur 등의 task에도 적용 가능한 유연성을 보입니다.
 
-## Conclusion
+# Conclusion
 
 저조도 개선이라는 주제에서 attention 기법을 사용하는 방법의 예를 알 수 있는 논문이었습니다. Enhancement-Net의 네트워크 구성 형태를 보면 CNN을 통해 얻은 feature들에 다시 CNN을 적용하여 feature를 구하는 multi-branch 형태인데 이렇게도 네트워크를 구성할 수 있겠구나 생각했네요. EM #1 ~ EM #5를 통해 이런 저런 다양한 feature를 뽑아놨으니 알아서 잘 골라봐라 라는 느낌입니다. 아쉬운 점은 기존에 저조도 개선 논문들에서 많이 언급되었던 NASA dataset, Multi-exposure dataset, LIME dataset에 대해 결과 영상을 더 보여줬으면 하는 바램입니다. 긴 글 읽어주셔서 감사합니다.
 
-## Reference
+# Reference
 
 Feifan Lv, Yu Li and Feng Lu, "Attention-guided Low-light Image Enhancement," *arXiv preprint arXiv:1908.00682*, 2019.
 
