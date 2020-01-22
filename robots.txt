@@ -1,0 +1,3 @@
+ser-agent: *
+Allow: /
+Sitemap: http://ch-improc.github.io/sitemap.xml

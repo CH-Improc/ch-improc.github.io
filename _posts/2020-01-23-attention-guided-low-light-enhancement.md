@@ -1,5 +1,6 @@
 ---
 title: Attention-guided Low-light Image Enhancement
+data: 2020-01-23
 description: Attention 기법과 Multi-branch network 구조를 이용한 저조도 영상 개선
 categories: 
 - Deep Learning
