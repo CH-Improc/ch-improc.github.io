@@ -196,17 +196,19 @@ synthetic dataset, real dataset, real images들에 대해 실험을 진행했으
 위 사진은 저조도와 노이즈를 합성한 영상에 대해 실험 결과 영상들입니다. 노이즈를 고려하지 않은 저조도 개선 방법에는 결과에 최신 노이즈 제거 방법중 하나인 CDBNet을 적용했다고 합니다. 그럼에도 불구하고 제안하는 방법이 노이즈가 적게 보이며, ground truth에 가까운 것을 알 수 있습니다.
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/table01.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="table01"></figure>
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table02.png' | prepend: site.baseurl}}" alt="table02"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table02.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="table02"></figure>
 
 표1, 2는 다양한 성능 평가 방법을 이용하여 객관적 평가한 결과를 보입니다. 표 1은 노이즈를 추가하지 않은 synthetic dataset, 표 2는 노이즈를 추가한 synthetic dataset에 대한 실험입니다. 제안하는 방법의 성능 수치가 가장 높게 나온 것을 알 수 있습니다.
 
 
 ### Experiments on real datasets
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig09.png' | prepend: site.baseurl}}" alt="fig07"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig09.png' | prepend: site.baseurl}}" alt="fig09"></figure>
+
 위 사진은 real-world dataset 인 LOL dataset과 SID dataset에 대한 실험 결과 영상들 입니다. LOL dataset은 한 장면에서 ISO 값을 바꿔 획득한 {저조도 영상, 적정 조도 영상} 쌍으로 구성되어 있고, SID dataset은 한 장면에서 노출 정도를 조절하여 촬영한 {짧은-노출, 긴-노출} 영상 쌍으로 구성되어 있습니다. 단, SID는 raw 데이터 형태로 되어 있습니다. 역시 제안하는 방법이 기존 방법들보다 artifact도 적으며 디테일 밝기 모든 면에서 좋아 보입니다.
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table03.png' | prepend: site.baseurl}}" alt="table03"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table03.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="table03"></figure>
+
 표 3은 LOL dataset 과 SID dataset에 대한 객관적 성능평가 결과를 보입니다. 표에서 두번째 행이 LOL dataset에 대한 평가, 세번째 행이 SID dataset에 대한 평가입니다.
 
 LOL dataset 의 경우 제안하는 네트워크 구조에서 Enhancement-Net의 일부를 수정하여 light weight 버전을 구현하고 비교한 것도 확인할 수 있습니다.
@@ -218,30 +220,36 @@ SID dataset의 경우는 raw 데이터로 되어 있어서 실험하기가 까�
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig11.png' | prepend: site.baseurl}}" alt="fig11"></figure>
 위 사진과 같이 실제 저조도 환경에서 촬영한 영상에 대한 결과를 보면, 제안하는 방법이 가장 선명하고 자연스러운 것을 확인할 수 있습니다.
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig10.png' | prepend: site.baseurl}}" alt="fig10"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig10.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig10"></figure>
+
 실제 저조도 환경에서 촬영한 영상에 대해 user study를 수행한 결과 제안하는 방법의 점수가 역시 가장 높게 나왔습니다.
 
 
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig12.png' | prepend: site.baseurl}}" alt="fig12"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig12.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig12"></figure>
+
 위 그림은 흑백 감시 카메라에서 촬영한 영상과 게임 장면에 제안하는 방법을 적용한 결과입니다. 제안하는 방법은 다양한 저조도 환경에도 적용할 수 있다고 주장합니다.
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig13.png' | prepend: site.baseurl}}" alt="fig13"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig13.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig13"></figure>
+
 저조도 영상과 저조도를 개선한 영상에 Mask R-CNN 객체 검출 알고리즘을 적용했을 때 결과입니다. 제안하는 방법으로 저조도를 개선 후 객체 검출을 수행했을 때, 객체를 더 잘 검출하는 것을 확인할 수 있습니다.
 
 ### Ablation study
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table04.png' | prepend: site.baseurl}}" alt="table04"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table04.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="table04"></figure>
+
 표 4는 본 논문에서 구성한 synthetic dataset 에 대해 ablation study를 수행한 결과입니다. 수행하는 과정에서 Reinforce-Net은 제외했습니다. 2번은 일반적으로 사용하는 MSE loss를 사용했을 때의 결과입니다. 논문에서 제안한 loss를 들을 사용할 때 더 성능이 높은 것을 확인할 수 있습니다. default 구성의 branch 수는 10으로 세팅했을 때의 결과입니다. branch의 수가 높을 때 항상 성능이 좋은 것은 아니라고 언급하고 있습니다.
 
 ### Unsatisfying cases
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig14.png' | prepend: site.baseurl}}" alt="fig14"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig14.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig14"></figure>
+
 위 그림은 제안하는 방법뿐만 아니라 다른 최신의 방법들도 만족할만한 결과를 얻지 못한 경우를 보입니다. 너무 어두워서 texture 정보가 아예 없는 경우, 과도한 압축으로 나타나는 block artifact, 과도한 노이즈 등으로 인해 만족지 못한 결과를 얻는다고 하고 있으며, 추후 이런 문제를 해결할 것이라고 합니다.
 
-**Flexible and effective for other low-level image processing tasks**
+### Flexible and effective for other low-level image processing tasks
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig157.png' | prepend: site.baseurl}}" alt="fig15"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig15.png' | prepend: site.baseurl}}" alt="fig15"></figure>
+
 제안하는 방법은 dehazing, super resolution, motion blur 등의 task에도 적용 가능한 유연성을 보입니다.
 
 ## Conclusion
