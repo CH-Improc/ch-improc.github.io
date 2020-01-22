@@ -79,7 +79,7 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   
   $$ I_{out}=M^{-1}(M(f( \mathcal{P}( I_{in} ) + N_{G} ))) $$
 
-  $\mathcal{P}$는 variance $\sigma_{p}^{2}$에 따른 poisson 노이즈를 부여하는 함수, $N_{G}$는 variance $\sigma _{g}^{2}$에 따른 additive white gaussian noise, $f(x)$는 camera response 함수, $M(x)$와 $M^{-1}(x)$는 각각 RGB to Bayer 함수와 그 역변환 함수인 demosaicing 함수입니다. 영상 압축은 고려하지 않았습니다.
+  $\mathcal{P}(\cdot)$는 variance $\sigma_{p}^{2}$에 따른 poisson 노이즈를 부여하는 함수, $N_{G}$는 variance $\sigma _{g}^{2}$에 따른 additive white gaussian noise, $f(x)$는 camera response 함수, $M(x)$와 $M^{-1}(x)$는 각각 RGB to Bayer 함수와 그 역변환 함수인 demosaicing 함수입니다. 영상 압축은 고려하지 않았습니다.
   
 - **Image contrast amplification**  
   기존 학습 기반 저조도 개선 방법들의 학습 dataset들은 {저조도 영상, 적정 조도 영상}으로 구성되는데, 이러한 방법의 결과 영상에서 종종 contrast가 낮은 현상이 나타납니다. 이러한 현상을 해결하기 위해 적정 조도 영상에 contrast amplication 방법을 적용하여 새로운 고품질의 영상을 획득하고 {적정 조도 영상, 고품질 영상} 쌍을 구성하여 추후 언급할 Reinforce-Net에 사용합니다. 고품질의 영상을 얻는 과정(contrast amplication 방법)은 다음과 같습니다. 적정 조도 영상에 gamma transformation의 선형 결합 방정식으로 10개의 다른 노출 영상을 생성하고 하나의 영상으로 합성한 후, 합성된 영상에 L0-smoothing(edge preserving filter 종류 중 하나)을 이용하여 디테일을 개선하여 고품질의 영상을 얻습니다.
@@ -126,16 +126,10 @@ Reinforce-Net은 저조도를 개선한 후에도 contrast가 낮게 나타는 �
 ### Loss function
 
 본 논문에서는 영상의 structural information, perceptual information, regional difference를 고려하여 새로운 loss 함수를 제안합니다.
-$$
-\mathcal{L} = \omega_{a}\mathcal{L}_{a} + \omega_{n}\mathcal{L}_{n} + \omega_{e}\mathcal{L}_ {e} + \omega_{r}\mathcal{L}_{r}
-$$
+
+$$ \mathcal{L} = \omega_{a}\mathcal{L}_{a} + \omega_{n}\mathcal{L}_{n} + \omega_{e}\mathcal{L}_ {e} + \omega_{r}\mathcal{L}_{r} $$
+
 수식에서 $$\mathcal{L}_{a}$$, $$\mathcal{L}_{n}$$, $$\mathcal{L}_{e}$$, $$\mathcal{L}_{r}$$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고 $$\omega_{a}$$, $$\omega_{n}$$, $$\omega_{e}$$, $$\omega_{r}$$들은 각 loss들의 가중치들입니다.
-
-수식에서 $\mathcal{L}_{a} \mathcal{L}_{n} \mathcal{L}_{e} \mathcal{L}_{r}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고
-
-수식에서 $\mathcal{L}_{a}, \mathcal{L}_{n}, \mathcal{L}_{e}, \mathcal{L}_{r}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고 
-
-수식에서 $\mathcal{L}_{a}$, $\mathcal{L}_{n}$, $\mathcal{L}_{e}$, $\mathcal{L}_{r}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고 
 
 - **Attention-Net loss**  
   보다 정확한 ue-attention map을 구하기 위해 $l_{2}$-norm을이용하여 구합니다.
@@ -156,7 +150,7 @@ $$
   
   $$ \mathcal{L}_{e}=\omega _{eb}\mathcal{L}_{eb}+\omega _{es}\mathcal{L}_{es}+\omega _{ep}\mathcal{L}_{ep}+\omega _{er}\mathcal{L}_{er} $$
   
-  수식에서 $\mathcal{L}_{eb}$, $\mathcal{L}_{es}$, $\mathcal{L}_{ep}$, $\mathcal{L}_{er}$들은 각각 bright loss, structural loss, perceptual loss, regional loss 이고, $\omega_{eb}$, $\omega_{es}$, $\omega_{ep}$, $\omega_{er}$들은 각 loss들의 가중치들 입니다.
+  수식에서 $$\mathcal{L}_{eb}$$, $$\mathcal{L}_{es}$$, $$\mathcal{L}_{ep}$$, $$\mathcal{L}_{er}$$들은 각각 bright loss, structural loss, perceptual loss, regional loss 이고, $$\omega_{eb}$$, $$\omega_{es}$$, $$\omega_{ep}$$, $$\omega_{er}$$들은 각 loss들의 가중치들 입니다.
   
   - **bright loss**는 네트워크로부터 추론한 영상이 충분한 밝기를 같도록 설계되었습니다.
   
