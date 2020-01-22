@@ -16,7 +16,6 @@ tags:
 어두운 곳에서 객체를 관찰 할 때, 사람 눈으로 관찰하면 잘 보이는데 카메라로 촬영하면 잘 보이지 않는 경우가 있습니다. 이렇게 조도가 낮은 환경에서 촬영한 영상을 저조도 영상이라고 부르는데, 저조도 영상은 대게 가시성이 떨어지며 대비가 낮고 노이즈가 나타나는 문제가 있습니다. 이러한 저조도 영상에 저조도 개선 기술을 적용하여 가시성과 대비를 개선할 수 있습니다. 저조도 영상 개선 기술은 다양한 분야에 많이 사용됩니다. 소비자들이 저조도 환경에서 아름다운 사진을 촬영할 수 있도록 할 수 있고, 자율 주행 자동차나 비디오 감시 등의 시스템들이 어두운 환경에서 고품질의 영상을 획득할 수 있도록 할 수 있습니다. 
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig01.png' | prepend: site.baseurl}}" alt="fig01"></figure>
-
 저조도 영상 개선 기술은 꾸준히 연구되어 오고 있는데 여전히 개선의 여지가 많습니다. 위 그림은 입력 영상에 따른 기존 방법들과 제안하는 방법의 결과를 보입니다. 기존 방법들은 Histogram equalization이나 Retinex 이론에 따라 저조도를 개선하는데, 대부분 노이즈의 영향을 무시하고 밝기와 대비를 개선하는 데 중점을 둡니다. 노이즈를 고려하는 방법의 경우, 노이즈를 제거하는 파이프라인을 별도로 구성하기도 합니다. 하지만 이 방법은 저조도를 개선하기 전에 노이즈를 제거하면 블러가 되고, 저조도를 개선한 후 노이즈를 제거하면 노이즈가 증폭되는 문제가 있습니다. 이 문제를 해결하기 위해 본 논문에서는 저조도와 노이즈 제거를 동시에 하는 솔루션을 제안합니다. 또, 이 논문에서는 기존의 학습 기반의 저조도 영상 개선 방법에서 사용되는 dataset들은 양이 부족하여 학습하는 데 어려움이 있다고 주장하고 있습니다. 이러한 문제를 해결하기 위해 양질의 저조도 영상 dataset을 구성하는 방법을 제안합니다.
 
 이 논문의 Contribution은 다음과 같습니다.
@@ -75,7 +74,6 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   $\alpha$와 $\beta$는 선형 변환을 의미하고, $\gamma$는 감마 변환을 의미합니다.
   
   <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig05.png' | prepend: site.baseurl}}" alt="fig05"></figure>
-  
   위 그림은 저조도 합성 결과를 검증하는 그림입니다. 그래프는 $YCbCr$의 $Y$채널 히스토그램이며, 저조도를 합성한 영상과 저노출의 영상을 비교했을 때 유사한 것을 알 수 있습니다. 
 - 노이즈는 카메라 내에서 처리하는 영상처리(Image processing) 파이프라인을 고려하여 real-world 저조도 잡음인 Gaussian-Poisson mixed 노이즈 모델을 이용하여 합성합니다.
   
@@ -91,7 +89,6 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 ### Network architecture
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig04.png' | prepend: site.baseurl}}" alt="fig04"></figure>
-
 이 논문에서 제안하는 네트워크는 4개의 서브넷 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net으로 구성되어 있습니다. 먼저 입력 영상 Input 영상을 Attention-Net에 입력 시킵니다. Attention-Net은 저조도 영역을 추정하는 네트워크입니다. 저조도 영역 Noise-Net은 노이즈 영역을 추정하는 네트워크입니다. 이 두 가지 네트워크로부터 얻은 결과를 보조(guide)로 Enhancement-Net에 이용합니다. 그리고 Reinforce-Net을 통하여 영상을 한 번 더 개선합니다.
 
 - **Attention-Net**  
@@ -102,7 +99,6 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   $max_{c}(x)$는 color채널 중에 최댓값을 반환하는 함수, $R$은 ground truth인 적정 조도 영상, $\mathcal{F}(R)$는 합성한 저조도 영상, $A$는 ue-attention map입니다.
   
   <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig06.png' | prepend: site.baseurl}}" alt="fig06"></figure>
-  
   위 사진은 입력 영상에 따른 ue-attention map과 반전된 ue-attention map, 기존 Retinex 이론의 illumination map을 보입니다. 반전된 ue-attention map은 기존 Retinex 이론에서 사용하는 illumination map과 유사한데, 이 내용은 ue-attention map에는 조도 혹은 노출에 관련된 정보가 있다는 것을 의미하고 Attention-Net을 사용하는 이유를 뒷받침해줍니다. 한편, 반전된 ue-attention map을 기존의 Retinex 이론 기반 알고리즘들에 바로 적용하면 만족할만한 결과를 얻을 수 없는데, 그 이유는 기존 Retinex 이론 기반 알고리즘들이 black 영역(pixel 값이 0인 부분)과 노이즈 영역을 다루기 어렵기 때문이라고 주장하고 있습니다.
   
 - **Noise-Net**  
@@ -115,9 +111,9 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   
   - **Enhancemeht module(EM)** : convolutional layer로부터 얻은 5개의 결과를 layer 순서대로 EM #1 ~ #5 에 입력시킵니다. EM들은 U-Net like 구조와 Res-Net like 구조로 구성했습니다.
     
-    > EM #1 : convolutional/deconvolutional layer로 구성된 구조(U-Net에서 skip connection이 없는 구조)
-    > EM #2, #3 : U-Net like 구조(2와 3의 차이는 중간 layer들의 feature map 크기가 다름)
-    > EM #4 : Res-Net like 구조(batch normalization를 제거하고 몇 개의 res-block들을 사용)
+    > EM #1 : convolutional/deconvolutional layer로 구성된 구조(U-Net에서 skip connection이 없는 구조)  
+    > EM #2, #3 : U-Net like 구조(2와 3의 차이는 중간 layer들의 feature map 크기가 다름)  
+    > EM #4 : Res-Net like 구조(batch normalization를 제거하고 몇 개의 res-block들을 사용)  
     > EM #5 : dilated convolutional layer로 구성된 구조(입력과 출력 크기는 같음)
     
   - **Fusion module(FM)** : EM들의 결과를 concat 하고, 컬러 채널의 dimension으로 출력되는 구조로 구성했습니다.
@@ -130,9 +126,15 @@ Reinforce-Net은 저조도를 개선한 후에도 contrast가 낮게 나타는 �
 
 본 논문에서는 영상의 structural information, perceptual information, regional difference를 고려하여 새로운 loss 함수를 제안합니다.
 
-$$ \mathcal{L}=\omega_{a}\mathcal{L}_{a}+\omega_{n}\mathcal{L}_{n}+\omega_{e}\mathcal{L}_{e}+\omega_{r}\mathcal{L}_{r} $$
+$$ \mathcal{L}=\omega_{a}\mathcal{L}_{a}+\omega_{n}\mathcal{L}_{n}+\omega_{e}\mathcal{L}_ {e}+\omega_{r}\mathcal{L}_{r} $$
+$$
+\mathcal{L}=\omega_{a}\mathcal{L}_{a}+\omega_{n}\mathcal{L}_{n}+\omega_{e}\mathcal{L}_ {e}+\omega_{r}\mathcal{L}_{r}
+$$
 
-$\mathcal{L}_{a}$, $\mathcal{L}_{n}$, $\mathcal{L}_{e}$, $\mathcal{L}_{r}$들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고, $\omega_{a}$, $\omega_{n}$, $\omega_{e}$, $\omega_{r}$들은 각 loss들의 가중치들입니다.
+$$
+\mathcal{L}_{a}, \mathcal{L}_{n}, \mathcal{L}_{e}, \mathcal{L}_{r}
+$$
+$ \mathcal{L}_{ a } $, $ \mathcal{L}_{n} $, $ \mathcal{L}_{e} $, $ \mathcal{L}_{r} $들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고, $\omega_{a}$, $\omega_{n}$, $\omega_{e}$, $\omega_{r}$들은 각 loss들의 가중치들입니다.
 
 - **Attention-Net loss**  
   보다 정확한 ue-attention map을 구하기 위해 $l_{2}$-norm을이용하여 구합니다.
@@ -196,23 +198,19 @@ synthetic dataset, real dataset, real images들에 대해 실험을 진행했으
 ### Experiments on synthetic datasets
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig07.png' | prepend: site.baseurl}}" alt="fig07"></figure>
-
 위 사진은 저조도와 노이즈를 합성한 영상에 대해 실험 결과 영상들입니다. 노이즈를 고려하지 않은 저조도 개선 방법에는 결과에 최신 노이즈 제거 방법중 하나인 CDBNet을 적용했다고 합니다. 그럼에도 불구하고 제안하는 방법이 노이즈가 적게 보이며, ground truth에 가까운 것을 알 수 있습니다.
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/table01.png' | prepend: site.baseurl}}" alt="table01"></figure>
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/table02.png' | prepend: site.baseurl}}" alt="table02"></figure>
-
 표1, 2는 다양한 성능 평가 방법을 이용하여 객관적 평가한 결과를 보입니다. 표 1은 노이즈를 추가하지 않은 synthetic dataset, 표 2는 노이즈를 추가한 synthetic dataset에 대한 실험입니다. 제안하는 방법의 성능 수치가 가장 높게 나온 것을 알 수 있습니다.
 
 
 ### Experiments on real datasets
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig09.png' | prepend: site.baseurl}}" alt="fig07"></figure>
-
 위 사진은 real-world dataset 인 LOL dataset과 SID dataset에 대한 실험 결과 영상들 입니다. LOL dataset은 한 장면에서 ISO 값을 바꿔 획득한 {저조도 영상, 적정 조도 영상} 쌍으로 구성되어 있고, SID dataset은 한 장면에서 노출 정도를 조절하여 촬영한 {짧은-노출, 긴-노출} 영상 쌍으로 구성되어 있습니다. 단, SID는 raw 데이터 형태로 되어 있습니다. 역시 제안하는 방법이 기존 방법들보다 artifact도 적으며 디테일 밝기 모든 면에서 좋아 보입니다.
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/table03.png' | prepend: site.baseurl}}" alt="table03"></figure>
-
 표 3은 LOL dataset 과 SID dataset에 대한 객관적 성능평가 결과를 보입니다. 표에서 두번째 행이 LOL dataset에 대한 평가, 세번째 행이 SID dataset에 대한 평가입니다.
 
 LOL dataset 의 경우 제안하는 네트워크 구조에서 Enhancement-Net의 일부를 수정하여 light weight 버전을 구현하고 비교한 것도 확인할 수 있습니다.
@@ -222,39 +220,32 @@ SID dataset의 경우는 raw 데이터로 되어 있어서 실험하기가 까�
 ### Experiments on real Images
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig11.png' | prepend: site.baseurl}}" alt="fig11"></figure>
-
 위 사진과 같이 실제 저조도 환경에서 촬영한 영상에 대한 결과를 보면, 제안하는 방법이 가장 선명하고 자연스러운 것을 확인할 수 있습니다.
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig10.png' | prepend: site.baseurl}}" alt="fig10"></figure>
-
 실제 저조도 환경에서 촬영한 영상에 대해 user study를 수행한 결과 제안하는 방법의 점수가 역시 가장 높게 나왔습니다.
 
 
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig12.png' | prepend: site.baseurl}}" alt="fig12"></figure>
-
 위 그림은 흑백 감시 카메라에서 촬영한 영상과 게임 장면에 제안하는 방법을 적용한 결과입니다. 제안하는 방법은 다양한 저조도 환경에도 적용할 수 있다고 주장합니다.
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig13.png' | prepend: site.baseurl}}" alt="fig13"></figure>
-
 저조도 영상과 저조도를 개선한 영상에 Mask R-CNN 객체 검출 알고리즘을 적용했을 때 결과입니다. 제안하는 방법으로 저조도를 개선 후 객체 검출을 수행했을 때, 객체를 더 잘 검출하는 것을 확인할 수 있습니다.
 
 ### Ablation study
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/table04.png' | prepend: site.baseurl}}" alt="table04"></figure>
-
 표 4는 본 논문에서 구성한 synthetic dataset 에 대해 ablation study를 수행한 결과입니다. 수행하는 과정에서 Reinforce-Net은 제외했습니다. 2번은 일반적으로 사용하는 MSE loss를 사용했을 때의 결과입니다. 논문에서 제안한 loss를 들을 사용할 때 더 성능이 높은 것을 확인할 수 있습니다. default 구성의 branch 수는 10으로 세팅했을 때의 결과입니다. branch의 수가 높을 때 항상 성능이 좋은 것은 아니라고 언급하고 있습니다.
 
 ### Unsatisfying cases
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig14.png' | prepend: site.baseurl}}" alt="fig14"></figure>
-
 위 그림은 제안하는 방법뿐만 아니라 다른 최신의 방법들도 만족할만한 결과를 얻지 못한 경우를 보입니다. 너무 어두워서 texture 정보가 아예 없는 경우, 과도한 압축으로 나타나는 block artifact, 과도한 노이즈 등으로 인해 만족지 못한 결과를 얻는다고 하고 있으며, 추후 이런 문제를 해결할 것이라고 합니다.
 
 **Flexible and effective for other low-level image processing tasks**
 
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig157.png' | prepend: site.baseurl}}" alt="fig15"></figure>
-
 제안하는 방법은 dehazing, super resolution, motion blur 등의 task에도 적용 가능한 유연성을 보입니다.
 
 ## Conclusion
