@@ -122,15 +122,10 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   
 - **Reinforce-Net**  
 Reinforce-Net은 저조도를 개선한 후에도 contrast가 낮게 나타는 현상과 detail을 강조하기 위해 구성한 네트워크입니다. 기존 방법 중에 dilated convolution 구조를 이용하여 효과적으로 영상처리 알고리즘을 구현한 방법이 있는데, 그 방법과 유사하게 네트워크를 구성했습니다. 
+
 ### Loss function
 
-본 논문에서는 영상의 structural information, perceptual information, regional difference를 고려하여 새로운 loss 함수를 제안합니다.
-
-$$
-\mathcal{L}=\omega_{a}\mathcal{L}_{a}+\omega_{n}\mathcal{L}_{n}+\omega_{e}\mathcal{L}_ {e}+\omega_{r}\mathcal{L}_{r}
-$$
-
-수식에서 $\mathcal{L}_{a}, \mathcal{L}_{n}, \mathcal{L}_{e}, \mathcal{L}_{r}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고
+본 논문에서는 영상의 structural information, perceptual information, regional difference를 고려하여 새로운 loss 함수를 제안합니다.수식에서 $\mathcal{L}_{a}, \mathcal{L}_{n}, \mathcal{L}_{e}, \mathcal{L}_{r}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고
 
 - **Attention-Net loss**  
   보다 정확한 ue-attention map을 구하기 위해 $l_{2}$-norm을이용하여 구합니다.
