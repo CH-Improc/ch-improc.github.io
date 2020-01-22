@@ -32,7 +32,7 @@ tags:
 
 ### Traditional enhancement methods
 
-기존 저조도 영상 개선 방법은 Histogram equalization(HE) 기반 방법과 Retinex 이론을 이용한 방법 두 가지로 나눌 수 있습니다. HE 기반 방법은 밝기 값의 통계적 특성을 이용하여 영상의 dynamic range를 확장하거나 영상의 대비(contrast)를 개선하는 방법입니다. 이 방법은 조명(illumination)을 고려하지 않고 영상 전체의 대비를 개선하면서 과도하게 혹은 저조하게 개선하는 현상을 일으킵니다.  두 번째로는 Retinex 이론을 이용한 방법입니다. 영상은 반사(reflectance) 성분과 조명(illumination) 성분으로 이루어져 있다는 가정에 따라 정의된 이론이 Retinex 이론입니다. 영상을 반사 성분과 조명 성분으로 나누었을 때, 외부 요인인 조명 성분을 잘 조정하면 저조도 영상을 개선할 수 있습니다. 이렇게 하기 위해서는 영상의 조명 성분을 잘 추정 해야 하는데, 수학적으로 ill-posed 문제이기 때문에 여러 가지 가정에 따라 조명 성분을 추정하는 게 일반적입니다. 이 과정에서 hand-crafted 방법들이 적용되며, 파라미터 튜닝에 의존적이게 됩니다. 또, Retinex 이론 기반 방법들은 대부분 노이즈를 고려하지 않기 때문에 저조도를 개선 시키면서 노이즈 또한 증폭시키는 문제점이 있습니다.
+기존 저조도 영상 개선 방법은 Histogram equalization(HE) 기반 방법과 Retinex 이론을 이용한 방법 두 가지로 나눌 수 있습니다. HE 기반 방법은 밝기 값의 통계적 특성을 이용하여 영상의 dynamic range를 확장하거나 영상의 대비(contrast)를 개선하는 방법입니다. 이 방법은 조명(illumination)을 고려하지 않고 영상 전체의 대비를 개선하면서 과도하게 혹은 저조하게 개선하는 현상을 일으킵니다.         두 번째로는 Retinex 이론을 이용한 방법입니다. 영상은 반사(reflectance) 성분과 조명(illumination) 성분으로 이루어져 있다는 가정에 따라 정의된 이론이 Retinex 이론입니다. 영상을 반사 성분과 조명 성분으로 나누었을 때, 외부 요인인 조명 성분을 잘 조정하면 저조도 영상을 개선할 수 있습니다. 이렇게 하기 위해서는 영상의 조명 성분을 잘 추정 해야 하는데, 수학적으로 ill-posed 문제이기 때문에 여러 가지 가정에 따라 조명 성분을 추정하는 게 일반적입니다. 이 과정에서 hand-crafted 방법들이 적용되며, 파라미터 튜닝에 의존적이게 됩니다. 또, Retinex 이론 기반 방법들은 대부분 노이즈를 고려하지 않기 때문에 저조도를 개선 시키면서 노이즈 또한 증폭시키는 문제점이 있습니다.
 
 ### Learning-based enhancement methods
 
@@ -51,11 +51,11 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 
 학습 dataset에 사용되는 영상은 기본적으로 고품질의 적정 조도에서 촬영된 영상이며, 이러한 고품질 영상에 저조도환경을 합성하여 {저조도 영상, 적정 조도 영상} 쌍을 구성합니다. 이 논문에서는 PASCAL VOC, MS COCO 등의 널리 사용되는 dataset에서 고화질의 적정 조도 영상을 선별하기 위해 아래 3가지 방법을 이용합니다.
 
-- **Darkness estimation**  적정 조도의 영상을 선별하기 위해 다음과 같은 방법을 적용합니다. 먼저 영상에 super-pixel segmentation을 적용하고, 각 super-pixel의 mean/variance가 일정 threshold보다 높다면 해당 super-pixel의 밝기는 밝다고 판단합니다. 그리고 밝다고 판단된 super-pixel의 수가 85% 이상이면 해당 영상은 적정 조도 영상으로 판단합니다.
+- **Darkness estimation**     적정 조도의 영상을 선별하기 위해 다음과 같은 방법을 적용합니다. 먼저 영상에 super-pixel segmentation을 적용하고, 각 super-pixel의 mean/variance가 일정 threshold보다 높다면 해당 super-pixel의 밝기는 밝다고 판단합니다. 그리고 밝다고 판단된 super-pixel의 수가 85% 이상이면 해당 영상은 적정 조도 영상으로 판단합니다.
 
-- **Blur estimation**  뿌옇지 않고 디테일이 잘 표현된 영상을 선별하는 과정입니다. 영상에 laplacian filter를 적용하고, 그 결과의 variance 구했을 때, 그 값이 500 이상이라면 detail이 잘 표현된 영상으로 판단합니다.
+- **Blur estimation**      뿌옇지 않고 디테일이 잘 표현된 영상을 선별하는 과정입니다. 영상에 laplacian filter를 적용하고, 그 결과의 variance 구했을 때, 그 값이 500 이상이라면 detail이 잘 표현된 영상으로 판단합니다.
 
-- **Colorfulness estimation**  색표현이 잘 된 영상을 선별하는 과정입니다. no-reference 기반의 색 표현 정도 측정 방법의 하나를 이용하며, 그 값이 500 이상이면 색 표현이 잘 된 영상으로 판단합니다.
+- **Colorfulness estimation**     색표현이 잘 된 영상을 선별하는 과정입니다. no-reference 기반의 색 표현 정도 측정 방법의 하나를 이용하며, 그 값이 500 이상이면 색 표현이 잘 된 영상으로 판단합니다.
 
 ### Target image synthesis
 
