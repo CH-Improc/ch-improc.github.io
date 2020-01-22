@@ -125,7 +125,11 @@ Reinforce-Net은 저조도를 개선한 후에도 contrast가 낮게 나타는 �
 
 ### Loss function
 
-본 논문에서는 영상의 structural information, perceptual information, regional difference를 고려하여 새로운 loss 함수를 제안합니다.수식에서 $\mathcal{L}_{a}$ , $\mathcal{L}_{n}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고
+본 논문에서는 영상의 structural information, perceptual information, regional difference를 고려하여 새로운 loss 함수를 제안합니다.
+
+$$$ \mathcal{L} = \omega_{a}\mathcal{L}_{a} + \omega_{n}\mathcal{L}_{n} + \omega_{e}\mathcal{L}_ {e} + \omega_{r}\mathcal{L}_{r} $$$
+
+수식에서 \mathcal{L}_{a}, \mathcal{L}_{n}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고
 
 - **Attention-Net loss**  
   보다 정확한 ue-attention map을 구하기 위해 $l_{2}$-norm을이용하여 구합니다.
