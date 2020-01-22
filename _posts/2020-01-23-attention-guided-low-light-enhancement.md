@@ -130,8 +130,7 @@ $$
 \mathcal{L}=\omega_{a}\mathcal{L}_{a}+\omega_{n}\mathcal{L}_{n}+\omega_{e}\mathcal{L}_ {e}+\omega_{r}\mathcal{L}_{r}
 $$
 
-수식에서 $\mathcal{L}_{a} $,  
-\mathcal{L}_{n}, \mathcal{L}_{e}, \mathcal{L}_{r}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고,  $\omega_{a}$, $\omega_{n}$, $\omega_{e}$, $\omega_{r}$들은 각 loss들의 가중치들입니다.
+수식에서 $\mathcal{L}_{a}, \mathcal{L}_{n}, \mathcal{L}_{e}, \mathcal{L}_{r}$ 들은 각각 Attention-Net, Noise-Net, Enhancement-Net, Reinforce-Net의 loss 함수이고
 
 - **Attention-Net loss**  
   보다 정확한 ue-attention map을 구하기 위해 $l_{2}$-norm을이용하여 구합니다.
