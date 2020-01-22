@@ -71,7 +71,7 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
 
   $\alpha$와 $\beta$는 선형 변환을 의미하고, $\gamma$는 감마 변환을 의미합니다.
   
-  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig05.png' | prepend: site.baseurl}}" width=67% height=67% alt="fig05"></figure>
+  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig05.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig05"></figure>
   
   위 그림은 저조도 합성 결과를 검증하는 그림입니다. 그래프는 $YCbCr$의 $Y$채널 히스토그램이며, 저조도를 합성한 영상과 저노출의 영상을 비교했을 때 유사한 것을 알 수 있습니다. 
 - 노이즈는 카메라 내에서 처리하는 영상처리(Image processing) 파이프라인을 고려하여 real-world 저조도 잡음인 Gaussian-Poisson mixed 노이즈 모델을 이용하여 합성합니다.
@@ -97,7 +97,7 @@ Real-world에서 대량의 {저조도 영상, 적정 조도 영상} 쌍 dataset�
   
   $max_{c}(x)$는 color채널 중에 최댓값을 반환하는 함수, $R$은 ground truth인 적정 조도 영상, $\mathcal{F}(R)$는 합성한 저조도 영상, $A$는 ue-attention map입니다.
   
-  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig06.png' | prepend: site.baseurl}}" width=67% height=67% alt="fig06"></figure>
+  <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig06.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig06"></figure>
   
   위 사진은 입력 영상에 따른 ue-attention map과 반전된 ue-attention map, 기존 Retinex 이론의 illumination map을 보입니다. 반전된 ue-attention map은 기존 Retinex 이론에서 사용하는 illumination map과 유사한데, 이 내용은 ue-attention map에는 조도 혹은 노출에 관련된 정보가 있다는 것을 의미하고 Attention-Net을 사용하는 이유를 뒷받침해줍니다. 한편, 반전된 ue-attention map을 기존의 Retinex 이론 기반 알고리즘들에 바로 적용하면 만족할만한 결과를 얻을 수 없는데, 그 이유는 기존 Retinex 이론 기반 알고리즘들이 black 영역(pixel 값이 0인 부분)과 노이즈 영역을 다루기 어렵기 때문이라고 주장하고 있습니다.
   
@@ -195,8 +195,9 @@ synthetic dataset, real dataset, real images들에 대해 실험을 진행했으
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/fig07.png' | prepend: site.baseurl}}" alt="fig07"></figure>
 위 사진은 저조도와 노이즈를 합성한 영상에 대해 실험 결과 영상들입니다. 노이즈를 고려하지 않은 저조도 개선 방법에는 결과에 최신 노이즈 제거 방법중 하나인 CDBNet을 적용했다고 합니다. 그럼에도 불구하고 제안하는 방법이 노이즈가 적게 보이며, ground truth에 가까운 것을 알 수 있습니다.
 
-<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table01.png' | prepend: site.baseurl}}" alt="table01"></figure>
+<figure><img src="{{ '/assets/post_images/AgLLNet_figures/table01.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="table01"></figure>
 <figure><img src="{{ '/assets/post_images/AgLLNet_figures/table02.png' | prepend: site.baseurl}}" alt="table02"></figure>
+
 표1, 2는 다양한 성능 평가 방법을 이용하여 객관적 평가한 결과를 보입니다. 표 1은 노이즈를 추가하지 않은 synthetic dataset, 표 2는 노이즈를 추가한 synthetic dataset에 대한 실험입니다. 제안하는 방법의 성능 수치가 가장 높게 나온 것을 알 수 있습니다.
 
 
