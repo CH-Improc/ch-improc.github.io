@@ -148,7 +148,7 @@ $$ \mathcal{L} = \omega_{a}\mathcal{L}_{a} + \omega_{n}\mathcal{L}_{n} + \omega_
   
   수식에서 $$\mathcal{L}_{eb}$$, $$\mathcal{L}_{es}$$, $$\mathcal{L}_{ep}$$, $$\mathcal{L}_{er}$$들은 각각 bright loss, structural loss, perceptual loss, regional loss 이고, $$\omega_{eb}$$, $$\omega_{es}$$, $$\omega_{ep}$$, $$\omega_{er}$$들은 각 loss들의 가중치들 입니다.
   
-  - **bright loss**는 네트워크로부터 추론한 영상이 충분한 밝기를 같도록 설계되었습니다.
+  - **bright loss**는 네트워크로부터 추론한 영상이 충분한 밝기를 갖도록 설계되었습니다.
   
     $$ \mathcal{L}_{eb}=\left \| \mathcal{S}(\mathcal{F}_{e}(I,{A}',{N}') - \tilde{I}) \right \|^{1} $$
   
