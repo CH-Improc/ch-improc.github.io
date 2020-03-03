@@ -1,7 +1,8 @@
 ---
 title: Kaggle competition - Bengali AI
 data: 2020-03-04
-description: 
+description:
+MNIST의 벵골어 버전 competition
 categories: 
 - Kaggle competition
 
@@ -12,8 +13,8 @@ tags:
 
 # Introduction
 
-MNIST의 벵골어 버전  
-https://www.kaggle.com/c/bengaliai-cv19/overvie  
+MNIST의 벵골어 버전 [Bengali.AI competition 페이지](https://www.kaggle.com/c/bengaliai-cv19/overview)
+
 
 - 벵골어는 세계에서 5번째로 많이 사용하며, 방글라데시와 인도에서 많이 사용함
 
