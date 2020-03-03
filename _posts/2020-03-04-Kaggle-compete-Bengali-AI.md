@@ -24,7 +24,7 @@ MNIST의 벵골어 버전 [Bengali.AI competition 페이지](https://www.kaggle.
 
 - 벵골어의 문자 하나는 grapheme root, vowel diacritics, consonant diacritics 세개의 요소로 나눌 수 있으며 grapheme root 요소는 168개의 클래스, vowel diacritics 요소는 11개의 클래스, consonant diacritics 요소는 7개의 클래스로 분류됨(아래 그림 확인)
 
-<figure><img src="{{ '/assets/post_images/Bengali_AI_figures/fig01.png' | prepend: site.baseurl}}" alt="fig01"></figure>
+<figure><img src="{{ '/assets/post_images/Bengali_AI_figures/fig01.png' | prepend: site.baseurl}}" width="67%" height="67%" alt="fig01"></figure>
 # Reference
 
-https://www.kaggle.com/c/bengaliai-cv19/overview
+<https://www.kaggle.com/c/bengaliai-cv19/overview>
