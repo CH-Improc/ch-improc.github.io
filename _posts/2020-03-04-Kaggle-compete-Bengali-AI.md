@@ -14,7 +14,7 @@ tags:
 # Introduction
 
 MNIST의 벵골어 버전  
-[Bengali.AI competition 페이지](https://www.kaggle.com/c/bengaliai-cv19/overview)
+https://www.kaggle.com/c/bengaliai-cv19/overview
 
 
 - 벵골어는 세계에서 5번째로 많이 사용하며, 방글라데시와 인도에서 많이 사용함
@@ -29,4 +29,4 @@ MNIST의 벵골어 버전
 
 # Reference
 
-<https://www.kaggle.com/c/bengaliai-cv19/overview>
+https://www.kaggle.com/c/bengaliai-cv19/overview
